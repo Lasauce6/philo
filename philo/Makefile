@@ -6,54 +6,44 @@
 #    By: rbaticle <rbaticle@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/03 14:29:18 by rbaticle          #+#    #+#              #
-#    Updated: 2025/02/03 14:47:42 by rbaticle         ###   ########.fr        #
+#    Updated: 2025/03/17 12:39:42 by rbaticle         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
-BONUS = philo_bonus
 CC = cc
 CFLAGS = -Wall -Werror -Wextra
 
 SRCS_DIR = ./srcs/
-SRCS_NAMES = main.c
+SRCS_NAMES = main.c \
+			 init.c \
+			 free.c \
+			 mutex_threads.c \
+			 start.c \
+			 utils.c \
+			 getter_setters.c
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_NAMES))
 OBJS = $(SRCS:.c=.o)
 
-SRCS_NAMES_BONUS = 
-SRCS_BONUS = $(addprefix $(SRCS_DIR), $(SRCS_NAMES_BONUS))
-OBJS_BONUS = $(SRCS_BONUS:.c=.o)
-
-INCLUDES = ./includes/
-HEADER_FILES = philo.h
-HEADERS = $(addprefix $(INCLUDES), $(HEADER_FILES))
+HEADERS = philo.h
 
 all: $(NAME)
 
 $(NAME): $(OBJS) $(HEADERS)
-	$(CC) $(CFLAGS) $(OBJS) -I $(INCLUDES) -o $(NAME)
-
-bonus: $(OBJS_BONUS) $(HEADERS)
-	$(CC) $(CFLAGS) $(OBJS_BONUS) -I $(INCLUDES) -o $(BONUS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 fsan: $(HEADERS)
-	$(CC) $(CFLAGS) -g3 -fsanitize=address $(SRCS) -I $(INCLUDES) -o $(NAME)
-
-fsanb: $(HEADERS)
-	$(CC) $(CFLAGS) -g3 -fsanitize=address $(SRCS_BONUS) -I $(INCLUDES) -o $(BONUS)
+	$(CC) $(CFLAGS) -g3 -fsanitize=address $(SRCS) -o $(NAME)
 
 debug: $(HEADERS)
 	$(CC) $(CFLAGS) -g3 $(SRCS) -I $(INCLUDES) -o $(NAME)
 
-debugb: $(HEADERS)
-	$(CC) $(CFLAGS) -g3 $(SRCS) -I $(INCLUDES) -o $(BONUS)
-
 clean:
-	rm -rf $(OBJS) $(OBJS_BONUS)
+	rm -rf $(OBJS)
 
 fclean: clean
-	rm -rf $(NAME) $(BONUS)
+	rm -rf $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re fsan debug bonus fsanb debugb
+.PHONY: all clean fclean re fsan debug
