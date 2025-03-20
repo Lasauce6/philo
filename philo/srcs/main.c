@@ -5,34 +5,72 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbaticle <rbaticle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/03 14:37:33 by rbaticle          #+#    #+#             */
-/*   Updated: 2025/03/17 12:04:54 by rbaticle         ###   ########.fr       */
+/*   Created: 2025/03/19 15:28:44 by rbaticle          #+#    #+#             */
+/*   Updated: 2025/03/20 18:46:40 by rbaticle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-void	error_exit(char *msg, t_data *data)
+void	clear_data(t_data *data)
 {
-	while (*msg++)
-		write(STDERR_FILENO, msg, 1);
-	free_data(data);
-	exit(1);
+	if (data->id)
+		free(data->id);
+	if (data->forks)
+		free(data->forks);
+	if (data->philos)
+		free(data->philos);
+}
+
+void	ft_exit(t_data *data)
+{
+	int	i;
+
+	i = -1;
+	while (++i < data->nb_philo)
+	{
+		pthread_mutex_destroy(&data->forks[i]);
+		pthread_mutex_destroy(&data->philos[i].lock);
+	}
+	pthread_mutex_destroy(&data->write);
+	pthread_mutex_destroy(&data->lock);
+	clear_data(data);
+}
+
+int	error(char *str, t_data *data)
+{
+	printf("%s\n", str);
+	if (data)
+		ft_exit(data);
+	return (1);
+}
+
+static int	one_philo(t_data *data)
+{
+	data->t_start = get_time();
+	if (pthread_create(&data->id[0], NULL, &routine, &data->philos[0]))
+		return (error(THREAD_ERROR, data));
+	pthread_detach(data->id[0]);
+	while (data->dead == 0)
+		ft_usleep(0);
+	ft_exit(data);
+	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-	t_data	*data;
+	t_data	data;
 
-	if (argc < 5 || ft_atoi(argv[1], NULL) <= 0 || argc > 6)
-		return (printf("Error: usage -> ./philo number_of_philosophers time_to_die \
-time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n"), 1);
-	else
-	{
-		data = init_data(argv);
-		if (data == NULL)
-			return (printf("MALOC_ERROR"), 1);
-		start(data);
-	}
+	if (argc < 5 || argc > 6)
+		return (1);
+	if (check_input(argv))
+		return (1);
+	if (init(&data, argc, argv))
+		return (1);
+	if (data.nb_philo == 1)
+		return (one_philo(&data));
+	if (start(&data))
+		return (1);
+	ft_exit(&data);
 	return (0);
 }

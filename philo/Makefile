@@ -6,7 +6,7 @@
 #    By: rbaticle <rbaticle@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/03 14:29:18 by rbaticle          #+#    #+#              #
-#    Updated: 2025/03/17 12:39:42 by rbaticle         ###   ########.fr        #
+#    Updated: 2025/03/20 20:35:35 by rbaticle         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,11 +17,9 @@ CFLAGS = -Wall -Werror -Wextra
 SRCS_DIR = ./srcs/
 SRCS_NAMES = main.c \
 			 init.c \
-			 free.c \
-			 mutex_threads.c \
 			 start.c \
-			 utils.c \
-			 getter_setters.c
+			 actions.c \
+			 utils.c
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_NAMES))
 OBJS = $(SRCS:.c=.o)
 

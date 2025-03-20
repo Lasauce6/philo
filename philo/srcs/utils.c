@@ -5,52 +5,19 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbaticle <rbaticle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/03 15:18:40 by rbaticle          #+#    #+#             */
-/*   Updated: 2025/03/17 12:04:22 by rbaticle         ###   ########.fr       */
+/*   Created: 2025/03/19 15:40:34 by rbaticle          #+#    #+#             */
+/*   Updated: 2025/03/20 21:04:06 by rbaticle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-static inline bool	ft_isdigit(char c)
-{
-	return (c >= '0' && c <= '9');
-}
-
-static inline bool	ft_isspace(char c)
-{
-	return ((c >= 9 && c <= 13) || c == ' ');
-}
-
-static const char	*valid_input(const char *str, t_data *data)
-{
-	int			len;
-	const char	*nbr;
-
-	len = 0;
-	while (ft_isspace(*str))
-		str++;
-	if (*str == '+')
-		str++;
-	if (*str == '-')
-		error_exit("Only positive numbres are allowed\n", data);
-	if (!ft_isdigit(*str))
-		error_exit("Input is invalid\n", data);
-	nbr = str;
-	while (ft_isdigit(*str++))
-		len++;
-	if (len > 10)
-		error_exit("Value to big\n", data);
-	return (nbr);
-}
-
-int	ft_atoi(const char *str, t_data *data)
+int	ft_atoi(const char *str)
 {
 	size_t	i;
 	long	n;
 	int		sign;
 
-	str = valid_input(str, data);
 	i = 0;
 	n = 0;
 	sign = 1;
@@ -67,15 +34,49 @@ int	ft_atoi(const char *str, t_data *data)
 	return (n * sign);
 }
 
-long	ft_atol(const char *str, t_data *data)
+int	check_input(char **argv)
 {
-	long	nb;
+	int	i;
+	int	j;
 
-	nb = 0;
-	str = valid_input(str, data);
-	while (ft_isdigit(*str))
-		nb = (nb * 10) + (*str++ - 48);
-	if (nb > INT_MAX)
-		error_exit("Value to big\n", data);
-	return (nb);
+	i = 0;
+	while (argv[++i])
+	{
+		j = -1;
+		while (argv[i][++j])
+		{
+			if ((argv[i][j] < 48 || argv[i][j] > 57))
+				return (error(INPUT_ERROR, NULL));
+		}
+	}
+	return (0);
+}
+
+u_int64_t	get_time(void)
+{
+	struct timeval	tv;
+
+	if (gettimeofday(&tv, NULL))
+		return (error("gettimeofday Error", NULL));
+	return ((tv.tv_sec * (u_int64_t) 1000) + (tv.tv_usec / 1000));
+}
+
+int	ft_usleep(useconds_t time)
+{
+	u_int64_t	start;
+
+	start = get_time();
+	while ((get_time() - start) < time)
+		usleep(time / 10);
+	return (0);
+}
+
+int	ft_strcmp(const char *s1, const char *s2)
+{
+	while (*s1 && *s2 && *s1 == *s2)
+	{
+		s1++;
+		s2++;
+	}
+	return (*(unsigned char *) s1 - *(unsigned char *) s2);
 }
