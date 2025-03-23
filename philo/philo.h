@@ -6,7 +6,7 @@
 /*   By: rbaticle <rbaticle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 14:32:42 by rbaticle          #+#    #+#             */
-/*   Updated: 2025/03/20 20:34:59 by rbaticle         ###   ########.fr       */
+/*   Updated: 2025/03/23 15:35:04 by rbaticle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,33 +35,38 @@ struct	s_data;
 
 typedef struct s_philo
 {
-	struct s_data	*data;
 	pthread_t		t;
 	int				id;
 	int				eat_count;
-	int				status;
 	int				eating;
-	u_int64_t		t_death;
-	pthread_mutex_t	lock;
+	int				*dead;
+	int				nb_meals;
+	int				nb_philo;
+	size_t			t_death;
+	size_t			t_eat;
+	size_t			t_sleep;
+	size_t			t_start;
+	size_t			t_last_meal;
+	pthread_mutex_t	*write_lock;
+	pthread_mutex_t	*dead_lock;
+	pthread_mutex_t	*meal_lock;
 	pthread_mutex_t	*l_fork;
 	pthread_mutex_t	*r_fork;
 }	t_philo;
 
 typedef struct s_data
 {
-	pthread_t		*id;
+	int				dead;
 	int				nb_philo;
 	int				nb_meals;
-	int				dead;
-	int				end;
+	size_t			t_sleep;
+	size_t			t_eat;
+	size_t			t_death;
 	t_philo			*philos;
-	u_int64_t		t_death;
-	u_int64_t		t_eat;
-	u_int64_t		t_sleep;
-	u_int64_t		t_start;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	lock;
-	pthread_mutex_t	write;
+	pthread_mutex_t	dead_lock;
+	pthread_mutex_t	meal_lock;
+	pthread_mutex_t	write_lock;
 }	t_data;
 
 //	main.c
@@ -70,8 +75,10 @@ int			error(char *str, t_data *data);
 int			init(t_data *data, int argc, char **argv);
 //	start.c
 int			start(t_data *data);
-void		*routine(void *data);
+//	monitor.c
+void		*monitor(void *data);
 //	actions.c
+int			get_dead(t_philo *philo);
 void		message(char *str, t_philo *philo);
 void		eat(t_philo *philo);
 //	utils.c

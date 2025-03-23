@@ -6,11 +6,11 @@
 /*   By: rbaticle <rbaticle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 15:40:34 by rbaticle          #+#    #+#             */
-/*   Updated: 2025/03/20 21:04:06 by rbaticle         ###   ########.fr       */
+/*   Updated: 2025/03/21 13:29:00 by rbaticle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "philo.h"
 
 int	ft_atoi(const char *str)
 {

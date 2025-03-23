@@ -6,18 +6,18 @@
 /*   By: rbaticle <rbaticle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 18:24:51 by rbaticle          #+#    #+#             */
-/*   Updated: 2025/03/20 20:37:25 by rbaticle         ###   ########.fr       */
+/*   Updated: 2025/03/23 12:54:41 by rbaticle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "philo.h"
 
 static int	init_data(t_data *data, int argc, char **argv)
 {
 	data->nb_philo = (int) ft_atoi(argv[1]);
-	data->t_death = (u_int64_t) ft_atoi(argv[2]);
-	data->t_eat = (u_int64_t) ft_atoi(argv[3]);
-	data->t_sleep = (u_int64_t) ft_atoi(argv[4]);
+	data->t_death = (size_t) ft_atoi(argv[2]);
+	data->t_eat = (size_t) ft_atoi(argv[3]);
+	data->t_sleep = (size_t) ft_atoi(argv[4]);
 	if (argc == 6)
 		data->nb_meals = (int) ft_atoi(argv[5]);
 	else
@@ -25,17 +25,14 @@ static int	init_data(t_data *data, int argc, char **argv)
 	if (data->nb_philo <= 0 || data->nb_philo > 200)
 		return (error(VAL_ERROR, NULL));
 	data->dead = 0;
-	data->end = 0;
-	pthread_mutex_init(&data->write, NULL);
-	pthread_mutex_init(&data->lock, NULL);
+	pthread_mutex_init(&data->dead_lock, NULL);
+	pthread_mutex_init(&data->meal_lock, NULL);
+	pthread_mutex_init(&data->write_lock, NULL);
 	return (0);
 }
 
 static int	alloc(t_data *data)
 {
-	data->id = malloc(sizeof(pthread_t) * data->nb_philo);
-	if (!data->id)
-		return (error(MALLOC_ERROR, data));
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_philo);
 	if (!data->forks)
 		return (error(MALLOC_ERROR, data));
@@ -72,13 +69,20 @@ static void	init_philos(t_data *data)
 	i = 0;
 	while (i < data->nb_philo)
 	{
-		data->philos[i].data = data;
 		data->philos[i].id = i + 1;
 		data->philos[i].t_death = data->t_death;
+		data->philos[i].t_eat = data->t_eat;
+		data->philos[i].t_sleep = data->t_sleep;
+		data->philos[i].nb_meals = data->nb_meals;
+		data->philos[i].nb_philo = data->nb_philo;
 		data->philos[i].eat_count = 0;
 		data->philos[i].eating = 0;
-		data->philos[i].status = 0;
-		pthread_mutex_init(&data->philos[i].lock, NULL);
+		data->philos[i].t_start = get_time();
+		data->philos[i].t_last_meal = get_time();
+		data->philos[i].dead_lock = &data->dead_lock;
+		data->philos[i].meal_lock = &data->meal_lock;
+		data->philos[i].write_lock = &data->write_lock;
+		data->philos[i].dead = &data->dead;
 		i++;
 	}
 }
