@@ -6,7 +6,7 @@
 /*   By: rbaticle <rbaticle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 18:24:51 by rbaticle          #+#    #+#             */
-/*   Updated: 2025/03/23 12:54:41 by rbaticle         ###   ########.fr       */
+/*   Updated: 2025/03/23 16:17:04 by rbaticle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,21 @@ static int	init_forks(t_data *data)
 	i = -1;
 	while (++i < data->nb_philo)
 		pthread_mutex_init(&data->forks[i], NULL);
-	i = 0;
 	data->philos[0].l_fork = &data->forks[0];
 	data->philos[0].r_fork = &data->forks[data->nb_philo - 1];
-	i = 1;
-	while (i < data->nb_philo)
+	i = 0;
+	while (++i < data->nb_philo)
 	{
-		data->philos[i].l_fork = &data->forks[i];
-		data->philos[i].r_fork = &data->forks[i - 1];
-		i++;
+		if (i % 2 == 0)
+		{
+			data->philos[i].l_fork = &data->forks[i];
+			data->philos[i].r_fork = &data->forks[i - 1];
+		}
+		else
+		{
+			data->philos[i].r_fork = &data->forks[i];
+			data->philos[i].l_fork = &data->forks[i - 1];
+		}
 	}
 	return (0);
 }

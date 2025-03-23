@@ -6,7 +6,7 @@
 #    By: rbaticle <rbaticle@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/03 14:29:18 by rbaticle          #+#    #+#              #
-#    Updated: 2025/03/23 15:28:38 by rbaticle         ###   ########.fr        #
+#    Updated: 2025/03/23 16:12:56 by rbaticle         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,10 @@ all: $(NAME)
 $(NAME): $(OBJS) $(HEADERS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-fsan: $(HEADERS)
+fsana: $(HEADERS)
+	$(CC) $(CFLAGS) -g3 -fsanitize=address $(SRCS) -o $(NAME)
+
+fsant: $(HEADERS)
 	$(CC) $(CFLAGS) -g3 -fsanitize=thread $(SRCS) -o $(NAME)
 
 debug: $(HEADERS)

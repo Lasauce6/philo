@@ -6,7 +6,7 @@
 /*   By: rbaticle <rbaticle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 20:29:58 by rbaticle          #+#    #+#             */
-/*   Updated: 2025/03/23 15:40:30 by rbaticle         ###   ########.fr       */
+/*   Updated: 2025/03/23 16:02:43 by rbaticle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ void	eat(t_philo *philo)
 	pthread_mutex_unlock(philo->meal_lock);
 	ft_usleep(philo->t_eat);
 	philo->eating = 0;
-	pthread_mutex_unlock(philo->l_fork);
 	pthread_mutex_unlock(philo->r_fork);
+	pthread_mutex_unlock(philo->l_fork);
 	message(SLEEPING, philo);
 	ft_usleep(philo->t_sleep);
 	message(THINKING, philo);
