@@ -6,7 +6,7 @@
 /*   By: rbaticle <rbaticle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 20:29:58 by rbaticle          #+#    #+#             */
-/*   Updated: 2025/03/23 16:02:43 by rbaticle         ###   ########.fr       */
+/*   Updated: 2025/03/24 12:34:59 by rbaticle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,16 @@ void	eat(t_philo *philo)
 	}
 	pthread_mutex_lock(philo->l_fork);
 	message(TAKE_FORKS, philo);
+	pthread_mutex_lock(philo->meal_lock);
 	philo->eating = 1;
 	message(EATING, philo);
-	pthread_mutex_lock(philo->meal_lock);
 	philo->t_last_meal = get_time();
 	philo->eat_count++;
 	pthread_mutex_unlock(philo->meal_lock);
 	ft_usleep(philo->t_eat);
+	pthread_mutex_lock(philo->meal_lock);
 	philo->eating = 0;
+	pthread_mutex_unlock(philo->meal_lock);
 	pthread_mutex_unlock(philo->r_fork);
 	pthread_mutex_unlock(philo->l_fork);
 	message(SLEEPING, philo);
